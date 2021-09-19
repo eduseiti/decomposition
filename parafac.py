@@ -207,7 +207,7 @@ def select_data_and_factorize(which_cell_lines,
     dimensions_labels = [first_dimension, second_dimension, last_dimension]
     
     results = parafac(all_cells_tensor, parafac_components, n_iter_max=200, 
-                      tol=1e-8, linesearch=False, verbose=1, normalize_factors=normalize, cvg_criterion='abs_rec_error', init='svd')
+                      tol=1e-8, linesearch=False, verbose=1, normalize_factors=normalize, cvg_criterion='abs_rec_error', init='random')
     
     if plot:
         plot_parafac(results, components_to_plot, dimensions_labels)
