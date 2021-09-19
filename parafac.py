@@ -68,6 +68,13 @@ else:
     TREATMENTS = ['iEGFR']
 
 
+if len(sys.argv) > 4:
+    CELL_COUNTS = int(sys.argv[4])
+else:
+    CELL_COUNTS = 1000
+
+
+
 #
 # Read computed data
 #
@@ -278,5 +285,7 @@ def explore_parafac(decomposed_data, factors_to_combine=None, min_cluster_size=5
 
 decomposition_results = select_data_and_factorize(CELL_LINES, 
                                                   TREATMENTS, 
-                                                  INHIBITORS_TIMES, 1000, non_s_phase_cells_df, PARAFAC_FACTORS, True,
+                                                  INHIBITORS_TIMES, 
+                                                  CELL_COUNTS, 
+                                                  non_s_phase_cells_df, PARAFAC_FACTORS, True,
                                                   result_filename="non_s_phase_{}_treatments_{}_parafac_decomposition_{}.pkl")
