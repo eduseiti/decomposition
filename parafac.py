@@ -38,6 +38,19 @@ COMPLETE_CELL_LINES_MORE_1K = [
     'UACC812', 'UACC893', 'ZR7530'
 ]
 
+COMPLETE_CELL_LINES_ALL_MARKERS_MORE_1K = [
+    '184A1', 'BT474', 'CAL51', 'CAL851', 'EFM192A', 'HBL100',
+    'HCC2185', 'HCC3153', 'HDQP1', 'JIMT1', 'MCF7', 'MDAMB175VII',
+    'MFM223', 'MPE600', 'OCUBM', 'UACC812', 'ZR7530'
+]
+
+NO_S_PHASE_CELL_LINES_ALL_MARKERS_MORE_1K = [
+    '184A1', 'BT474', 'CAL51', 'CAL851', 'EFM192A', 'HBL100',
+    'HCC2185', 'HCC3153', 'HDQP1', 'JIMT1', 
+    'MFM223', 'MPE600', 'OCUBM', 'ZR7530'
+]
+
+
 
 if len(sys.argv) > 1:
     PARAFAC_FACTORS = int(sys.argv[1])
@@ -56,13 +69,25 @@ else:
 
 
 #
-# Read computed data, if available
+# Read computed data
 #
 
 with open("./data/complete_cell_lines_df.pkl", "rb") as inputFile:
     cell_lines_df = pickle.load(inputFile)
     
 ALL_MARKERS = cell_lines_df.columns[5:]
+
+
+with open("./data/kmeans_lda_split_class_0_s_phase.pkl", "rb") as inputFile:
+    class_0_s_phase = pickle.load(inputFile)
+
+with open("./data/kmeans_lda_split_class_1_non_s_phase.pkl", "rb") as inputFile:
+    class_1_non_s_phase = pickle.load(inputFile)
+
+
+
+
+non_s_phase_cells_df = cell_lines_df.iloc[class_1_non_s_phase]
 
 
 #
@@ -253,5 +278,5 @@ def explore_parafac(decomposed_data, factors_to_combine=None, min_cluster_size=5
 
 decomposition_results = select_data_and_factorize(CELL_LINES, 
                                                   TREATMENTS, 
-                                                  INHIBITORS_TIMES, 1000, cell_lines_df, PARAFAC_FACTORS, True,
-                                                  result_filename="{}_treatments_{}_parafac_decomposition_{}.pkl")
+                                                  INHIBITORS_TIMES, 1000, non_s_phase_cells_df, PARAFAC_FACTORS, True,
+                                                  result_filename="non_s_phase_{}_treatments_{}_parafac_decomposition_{}.pkl")
