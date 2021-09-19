@@ -47,7 +47,7 @@ else:
 if len(sys.argv) > 2:
     CELL_LINES = sys.argv[2].split(" ")
 else:
-    CELL_LINES = CELL_LINES_MORE_1K[0]
+    CELL_LINES = [CELL_LINES_MORE_1K[0]]
 
 if len(sys.argv) > 3:
     TREATMENTS = sys.argv[3].split(" ")
