@@ -109,7 +109,7 @@ tl.set_backend('pytorch')
 
 ### Helper functions
 
-def single_cell_line_multiple_treatments(which_cell_lines, which_treatments, times_list, cells_count, all_data_df):
+def single_cell_line_multiple_treatments(which_cell_lines, which_treatments, times_list, cells_count, all_data_df, return_counts=True):
     
     cell_lines_filters = all_data_df['cell_line'] == which_cell_lines[0]
     
@@ -138,7 +138,10 @@ def single_cell_line_multiple_treatments(which_cell_lines, which_treatments, tim
             all_times = []
 
             for time in times_list:
-                all_cells_markers = treatment_group_df.loc[(treatment_group_df['time'] == time)][ALL_MARKERS].to_numpy()
+                if return_counts:
+                    all_cells_markers = np.ceil(np.sinh(treatment_group_df.loc[(treatment_group_df['time'] == time)][ALL_MARKERS].to_numpy()) - 1)
+                else:
+                    all_cells_markers = treatment_group_df.loc[(treatment_group_df['time'] == time)][ALL_MARKERS].to_numpy()                
 
                 cells_sample = np.random.choice(list(range(all_cells_markers.shape[0])), cells_count, replace=False)
 
@@ -203,7 +206,7 @@ def select_data_and_factorize(which_cell_lines,
 
         print("Saving the {} MATLAB file".format(which_filename))
 
-        savemat(which_filename, {'phospho': selected_data, 'label': "single-cell_phosphorylation"})
+        savemat(which_filename, {'phospho': selected_data, 'label': "single-cell_phosphorylation"}, appendmat=True)
 
     all_cells_tensor = tl.tensor(selected_data)
     
