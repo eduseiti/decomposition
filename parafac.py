@@ -15,6 +15,9 @@ import torch
 
 import sys
 
+from scipy.io import savemat
+
+
 EGF_TIMES = [0., 5.5, 7., 9., 13., 17., 23., 30., 40., 60.]
 
 INHIBITORS_TIMES = [ 0.,  7.,  9., 13., 17., 40., 60.]
@@ -185,7 +188,8 @@ def select_data_and_factorize(which_cell_lines,
                               parafac_components, 
                               normalize, 
                               plot=False,
-                              result_filename=None):
+                              result_filename=None,
+                              export_matlab=False):
 
     print("\nCalculating PARAFAC decomposition, {} factors:\n- cell line(s): {}\n- treatment(s): {}\n- time(s): {}\n- cells per condition: {}\n".format(
         parafac_components, which_cell_lines, which_treatments, times_list, cells_count))
@@ -193,6 +197,14 @@ def select_data_and_factorize(which_cell_lines,
 
     selected_data = single_cell_line_multiple_treatments(which_cell_lines, which_treatments, times_list, cells_count, all_data_df)
     
+    if export_matlab:
+
+        which_filename = result_filename.split(".pkl")[0].format("_".join(which_cell_lines), "_".join(which_treatments), parafac_components)
+
+        print("Saving the {} MATLAB file".format(which_filename))
+
+        savemat(which_filename, {'phospho': selected_data, 'label': "single-cell_phosphorylation"})
+
     all_cells_tensor = tl.tensor(selected_data)
     
     if len(which_cell_lines) > 1:
@@ -287,5 +299,6 @@ decomposition_results = select_data_and_factorize(CELL_LINES,
                                                   TREATMENTS, 
                                                   INHIBITORS_TIMES, 
                                                   CELL_COUNTS, 
-                                                  non_s_phase_cells_df, PARAFAC_FACTORS, True,
-                                                  result_filename="non_s_phase_{}_treatments_{}_parafac_decomposition_{}.pkl")
+                                                  non_s_phase_cells_df, PARAFAC_FACTORS, False,
+                                                  result_filename="non_s_phase_{}_treatments_{}_parafac_decomposition_{}.pkl",
+                                                  export_matlab=True)
