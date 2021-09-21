@@ -109,7 +109,7 @@ tl.set_backend('pytorch')
 
 ### Helper functions
 
-def single_cell_line_multiple_treatments(which_cell_lines, which_treatments, times_list, cells_count, all_data_df, return_counts=True):
+def single_cell_line_multiple_treatments(which_cell_lines, which_treatments, times_list, cells_count, all_data_df, remove_smooth=True):
     
     cell_lines_filters = all_data_df['cell_line'] == which_cell_lines[0]
     
@@ -138,8 +138,8 @@ def single_cell_line_multiple_treatments(which_cell_lines, which_treatments, tim
             all_times = []
 
             for time in times_list:
-                if return_counts:
-                    all_cells_markers = np.ceil(np.sinh(treatment_group_df.loc[(treatment_group_df['time'] == time)][ALL_MARKERS].to_numpy()) - 1)
+                if remove_smooth:
+                    all_cells_markers = np.arcsinh(np.ceil(np.sinh(treatment_group_df.loc[(treatment_group_df['time'] == time)][ALL_MARKERS].to_numpy()) - 1) / 5)
                 else:
                     all_cells_markers = treatment_group_df.loc[(treatment_group_df['time'] == time)][ALL_MARKERS].to_numpy()                
 
